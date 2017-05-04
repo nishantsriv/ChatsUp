@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ChatsUp</string>
+    <string name="facebook_app_id">259279847811681</string>
+    <string name="invitation_title">Select User to send</string>
+    <string name="invitation_message">You are invited</string>
+    <string name="invitation_cta">invitation_code</string>
+</resources>
