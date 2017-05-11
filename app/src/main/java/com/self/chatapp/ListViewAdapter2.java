@@ -18,7 +18,7 @@ public class ListViewAdapter2 extends ArrayAdapter<Userclass> {
     private List<Userclass> detailsList;
 
     public ListViewAdapter2(Context context, List<Userclass> userDetailsList) {
-        super(context, R.layout.model, userDetailsList);
+        super(context, R.layout.model_userlist, userDetailsList);
         this.context = context;
         this.detailsList = userDetailsList;
     }
@@ -26,7 +26,7 @@ public class ListViewAdapter2 extends ArrayAdapter<Userclass> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.model, parent, false);
+        View view = inflater.inflate(R.layout.model_userlist, parent, false);
         TextView tv = (TextView) view.findViewById(R.id.username);
         Userclass userDetails = detailsList.get(position);
         String[] split = userDetails.getUsename().split("\\@");

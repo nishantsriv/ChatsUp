@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:orientation="vertical"
-    tools:context="com.self.chatapp.Login">
+    tools:context="com.self.chatapp.LoginActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -90,7 +90,7 @@
                     android:id="@+id/login_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/edittxt"
+                    android:background="@drawable/edittext_login"
                     android:ems="10"
                     android:hint="Enter email*"
                     android:paddingBottom="5sp"
@@ -110,10 +110,11 @@
                 android:padding="20sp">
 
                 <EditText
+                    android:inputType="textPassword"
                     android:id="@+id/login_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/edittxt"
+                    android:background="@drawable/edittext_login"
                     android:ems="10"
                     android:hint="Password*"
                     android:paddingBottom="5sp"

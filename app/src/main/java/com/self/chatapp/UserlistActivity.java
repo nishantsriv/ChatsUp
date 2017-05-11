@@ -1,9 +1,11 @@
 package com.self.chatapp;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,13 +24,14 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class Userlist extends AppCompatActivity {
+public class UserlistActivity extends AppCompatActivity {
     private DatabaseReference databaseReferenceuserdetail;
-    private ListView listView;
+    private RecyclerView  recyclerView;
     private ArrayList<Userclass> arrayList, validarraylist;
     private String name, id;
     private Toolbar toolbar;
     private TextView textView_toolbar;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +41,17 @@ public class Userlist extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
         textView_toolbar = (TextView) findViewById(R.id.text_toolbar);
-        textView_toolbar.setText("Userlist");
+        textView_toolbar.setText("UserlistActivity");
         arrayList = new ArrayList<>();
         validarraylist = new ArrayList<>();
-        listView = (ListView) findViewById(R.id.listView);
+        recyclerView = (RecyclerView) findViewById(R.id.rv_userlist);
         databaseReferenceuserdetail = FirebaseDatabase.getInstance().getReference("userdetail");
         name = getIntent().getStringExtra("username");
         String[] split = name.split("\\@");
         Toast.makeText(this, "Welcome: " + split[0], Toast.LENGTH_SHORT).show();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.show();
     }
 
     private void adduser() {
@@ -82,12 +87,12 @@ public class Userlist extends AppCompatActivity {
                         validarraylist.add(arrayList.get(i));
                     }
                 }
-                listView.setAdapter(new ListViewAdapter(Userlist.this, validarraylist));
-                SharedPreferences sharedPreferences = getSharedPreferences("name", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("names", name);
-                editor.commit();
-                startService(new Intent(Userlist.this, ServiceNotification.class));
+                recyclerView.setLayoutManager(new LinearLayoutManager(UserlistActivity.this));
+                recyclerView.setAdapter(new UserlistAdapter(UserlistActivity.this,validarraylist));
+                progressDialog.dismiss();
+                SharedPrefManager.getInstance(UserlistActivity.this).saveDetail("name", "names", name);
+
+                startService(new Intent(UserlistActivity.this, NotificationService.class));
             }
 
             @Override
@@ -95,15 +100,16 @@ public class Userlist extends AppCompatActivity {
 
             }
         });
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(Userlist.this, Chat.class);
+                Intent i = new Intent(UserlistActivity.this, ChatActivity.class);
                 i.putExtra("username", name);
                 i.putExtra("chat_with", validarraylist.get(position).getUsename());
                 startActivity(i);
             }
-        });
+        });*/
 
     }
 
@@ -118,7 +124,7 @@ public class Userlist extends AppCompatActivity {
         if (item.getItemId() == R.id.logout) {
             FirebaseAuth auth = FirebaseAuth.getInstance();
             auth.signOut();
-            startActivity(new Intent(Userlist.this, Login.class));
+            startActivity(new Intent(UserlistActivity.this, LoginActivity.class));
             finish();
         }
         return super.onOptionsItemSelected(item);
